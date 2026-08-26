@@ -1,0 +1,61 @@
+#!/bin/bash
+#SBATCH --job-name=vac_lr_all
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --time=50:00:00
+#SBATCH --output=log/vac_lr_all_%A_%a.out
+#SBATCH --error=log/vac_lr_all_%A_%a.err
+#SBATCH --array=0-39
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=prithvidake@ucsb.edu
+
+
+# Use was made of computational facilities purchased with funds from the
+# National Science Foundation (CNS-1725797) and administered by the Center for
+# Scientific Computing (CSC). The CSC is supported by the California NanoSystems
+# Institute and the Materials Research Science and Engineering Center (MRSEC;
+# NSF DMR 2308708) at UC Santa Barbara.
+
+PYTHON=$HOME/miniconda3/envs/jax072/bin/python
+cd $SLURM_SUBMIT_DIR
+
+# Combined LR / line-search sweep across the model settings, on case=test,
+# mc_iter=0. 40 independent array tasks = 5 settings x 4 learning rates x 2
+# optimizer modes. Merges vac_lr.job, vac_lr_indirect.job and vac_lr_bbox.job
+# into one submission so the whole analysis can be launched at once.
+#
+#   group = task / 8    (0..4)      local = task % 8
+#     group 0 (tasks  0-7 ) -> structured, cheat=1, noise=0  (rmeas_init)
+#     group 1 (tasks  8-15) -> structured, cheat=0, noise=0  (cmeas)
+#     group 2 (tasks 16-23) -> blackbox,            noise=0  (cmeas bbox)
+#     group 3 (tasks 24-31) -> structured, cheat=0, noise=1  (cmeas_noise)
+#     group 4 (tasks 32-39) -> blackbox,            noise=1  (cmeas_noise bbox)
+#   within each group: local = 2*lr_idx + mode_idx
+#     local 0,1 -> lr=1e-3 (adamw, hybrid)
+#     local 2,3 -> lr=1e-2 (adamw, hybrid)
+#     local 4,5 -> lr=5e-2 (adamw, hybrid)
+#     local 6,7 -> lr=1e-1 (adamw, hybrid)
+#
+# arg signatures:
+#   structured : VAc_param_fit_nn_param_noise_lr.py   CASE MC CHEAT NOISE LR MODE
+#   blackbox   : VAc_param_fit_bbox_param_noise_lr.py  CASE MC NOISE LR MODE
+CASE=test
+MC=0
+NN_SCRIPT=VAc_param_fit_nn_param_noise_lr.py
+BBOX_SCRIPT=VAc_param_fit_bbox_param_noise_lr.py
+
+LRS=(1e-3 1e-2 5e-2 1e-1)
+MODES=(adamw hybrid)
+
+GROUP=$((SLURM_ARRAY_TASK_ID / 8))    # 0..4
+LOCAL=$((SLURM_ARRAY_TASK_ID % 8))    # 0..7
+LR=${LRS[$((LOCAL / 2))]}
+MODE=${MODES[$((LOCAL % 2))]}
+
+case $GROUP in
+  0) $PYTHON $NN_SCRIPT   $CASE $MC 1 0 $LR $MODE ;;   # structured, cheat,   nonoise (rmeas_init)
+  1) $PYTHON $NN_SCRIPT   $CASE $MC 0 0 $LR $MODE ;;   # structured, nocheat, nonoise (cmeas)
+  2) $PYTHON $BBOX_SCRIPT $CASE $MC   0 $LR $MODE ;;   # blackbox,            nonoise (cmeas bbox)
+  3) $PYTHON $NN_SCRIPT   $CASE $MC 0 1 $LR $MODE ;;   # structured, nocheat, noise   (cmeas_noise)
+  4) $PYTHON $BBOX_SCRIPT $CASE $MC   1 $LR $MODE ;;   # blackbox,            noise   (cmeas_noise bbox)
+esac

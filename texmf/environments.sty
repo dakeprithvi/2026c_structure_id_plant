@@ -1,0 +1,191 @@
+\setbeamertemplate{theorems}[numbered]
+\setbeamertemplate{caption}[numbered]
+
+%\usepackage[font=small]{caption}
+% give beamer a list of figures so we can use the lof file
+% \input{beamerlof.sty}
+% remove whitespace around caption to enable larger figures
+\setlength{\abovecaptionskip}{0pt}
+\setlength{\belowcaptionskip}{0pt} 
+% reduce caption font size
+\setbeamerfont{caption}{size=\footnotesize}
+
+\RequirePackage{xkeyval}
+
+\define@key{texfig}{dir}{\def\@texfigdir{#1}}
+\define@key{texfig}{height}{\def\@texfigheight{#1}}
+\define@key{texfig}{width}{\def\@texfigwidth{#1}}
+\define@key{texfig}{scale}{\def\@texfigscale{#1}}
+\define@boolkey{texfig}{noresize}[true]{}{}
+\define@boolkey{texfig}{noweb}[true]{}{}
+\define@boolkey{texfig}{nocode}[true]{}{}
+\define@boolkey{texfig}{noalign}[true]{}{}
+\define@boolkey{texfig}{py}[true]{}{}
+
+\presetkeys{texfig}{dir=,height=,width=,scale=}{}
+
+\newlength{\@texfigdefaultheight}
+%\setlength{\@texfigdefaultheight}{3.125in}
+\setlength{\@texfigdefaultheight}{0.7\textheight}
+\newcommand{\texfigdefaultheight}[1]{\setlength{\@texfigdefaultheight}{#1}}
+
+\let\texfigfile\@gobbletwo
+
+\newcommand{\@texfigdirsetup}[1]{%
+  \xdef\@tmpdirname{#1}%
+%  \ifx\@tmpdirname\@empty\@kbsettmpdirname\fi}
+  \ifx\@tmpdirname\@empty\fi}
+
+\newcommand{\@texfigsetup}[2]{%
+  \@texfigdirsetup{#1}%
+  \def\@tmpopts{}%
+  \def\@tmpoptsep{}%
+  \ifKV@texfig@noweb
+    \def\@tmpopts{noweb}%
+    \def\@tmpoptsep{,}%
+  \fi
+  \ifKV@texfig@nocode
+    \xdef\@tmpopts{nocode\@tmpoptsep\@tmpopts}%
+    \def\@tmpoptsep{,}%
+  \fi
+  \ifKV@texfig@py
+    \xdef\@tmpopts{py\@tmpoptsep\@tmpopts}%
+    \def\@tmpoptsep{,}%
+  \fi
+  \addtocontents{lof}{\protect\texfigfile{\@tmpopts}{#2}}}
+
+\newcommand{\texfig}[2][]{%
+  \setkeys{texfig}{#1}{%
+    \ifx\@texfigscale\@empty
+      \gdef\@scaledefaultheight{\@texfigdefaultheight}%
+    \else
+      \gdef\@scaledefaultheight{\@texfigscale\@texfigdefaultheight}%
+    \fi
+    \ifx\@texfigheight\@empty
+      \ifx\@texfigwidth\@empty
+        \ifKV@texfig@noresize
+          \gdef\@texfigresizebox{}%
+        \else
+          \gdef\@texfigresizebox{\resizebox{!}{\@scaledefaultheight}}%
+        \fi
+      \else
+        \gdef\@texfigresizebox{\resizebox{\@texfigwidth}{!}}%
+      \fi
+    \else
+      \ifx\@texfigwidth\@empty
+        \gdef\@texfigresizebox{\resizebox{!}{\@texfigheight}}%
+      \else
+        \gdef\@texfigresizebox{%
+          \resizebox{\@texfigwidth}{\@texfigheight}}%
+      \fi
+    \fi}%
+  \@texfigsetup{\@texfigdir}{#2}%
+  \ifKV@texfig@noalign
+    \ifKV@texfig@py
+      \@texfigresizebox{\includegraphics{#2}}%
+    \else
+      \@texfigresizebox{\input{#2}}%
+    \fi
+  \else
+    \ifKV@texfig@py
+      \centerline{\@texfigresizebox{\includegraphics{#2}}}
+    \else
+      \centerline{\@texfigresizebox{\input{#2}}}
+    \fi
+  \fi}
+
+\newcommand{\xfig}[2][]{%
+  \xdef\@tmpoptarg{#1}%
+  \ifx\@tmpoptarg\@empty
+    \texfig[noresize]{#2}
+  \else
+    \texfig[noresize,#1]{#2}
+  \fi}
+
+
+\newenvironment{subprobs}{\begin{enumerate}%
+  \newcommand{\subprob}{\item}%
+  \renewcommand{\theenumi}{\@alph\c@enumi}%
+  \newcommand{\labelenumi}{\theenumi}}%
+{\end{enumerate}}
+
+% following doesn't work with beamer; but changing code->verbatim works.
+% \newenvironment{code}{\begin{verbatim}}{\end{verbatim}}
+
+\def\@boxedxeqncr[#1]{%
+  \ifnum0=`{\fi}%
+  \@@eqncr
+  \multispan{3}{\penalty\@eqpen\vrule height\jot\hfil\vrule height\jot}\cr
+  \multispan{3}{\penalty\@eqpen\vrule height #1\hfil\vrule height #1}\cr
+}
+\def\boxedeqnarray{%
+   \stepcounter{equation}%
+   \def\@currentlabel{\p@equation\theequation}%
+   \let\@xeqncr\@boxedxeqncr
+   \global\@eqnswtrue
+   \m@th\offinterlineskip
+   \global\@eqcnt\z@
+   \tabskip\@centering
+   \let\\\@eqncr
+   $$\everycr{}\halign to\displaywidth\bgroup \vrule\hskip\arraycolsep
+       \hskip\@centering$\displaystyle\tabskip\z@skip{##}$\@eqnsel
+      &\global\@eqcnt\@ne\,\hfil${##}$\hfil
+      &\global\@eqcnt\tw@\,
+        $\displaystyle{##}$\hfil\tabskip\@centering\hskip\arraycolsep\vrule
+      &\global\@eqcnt\thr@@ \hb@xt@\z@\bgroup\hss##\egroup
+         \tabskip\z@skip
+      \cr
+      \multispan{3}{\hrulefill}\cr
+      \multispan{3}{\penalty\@eqpen\vrule height\jot\hfil\vrule height\jot}\cr
+}
+\def\endboxedeqnarray{%
+      \@@eqncr
+      \multispan{3}{\penalty\@eqpen\vrule height\jot\hfil\vrule height\jot}\cr
+      \multispan{3}{\hrulefill}\cr
+      \egroup
+      \global\advance\c@equation\m@ne
+   $$\@ignoretrue
+}
+\newcommand{\boxhline}{\cline{1-3}\rule{0pt}{2.5ex}}
+
+\newcommand{\boxedhline}{\\[1ex]\hline\rule{0pt}{2.5ex}}
+
+\urldef{\nobhillweblong}{\url}{http://www.nobhillpublishing.com}
+\urldef{\nobhillweb}{\url}{www.nobhillpublishing.com}
+
+%
+% website names in one place because they change often
+%
+\urldef{\jbrawmpcweb}{\url}{www.che.wisc.edu/~jbraw/mpc}
+\urldef{\octaveweb}{\url}{www.octave.org}
+\urldef{\emaila}{\url}{orders@nobhillpublishing.com}
+
+\newcommand{\matlab}{{\sc Matlab}}
+
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+\renewcommand{\label}{}
+
+\newtheorem{proposition}{Proposition}
+\newtheorem{conjecture}{Conjecture}
+
+\theoremstyle{definition}
+\newtheorem{remark}{Remark}
+\newtheorem{assumption}{Assumption}
+\newtheorem{hypothesis}{Hypothesis}
+\newtheorem{property}{Property}
+
+\newcommand{\paragraph}[1]{{\bf #1}}
+
+% Redefine beamer solution environment to go with example, not theorem.
+% Keep example color scheme, but disable numbering of solutions.
+% \let\sol@savedexample\example
+% \renewcommand{\solution}{\sol@savedexample%
+% }
+
+\theoremstyle{example}
+\newtheorem*{solutionx}{Solution}
+
+\renewcommand{\qedhere}{\qedsymbol}
+
+%\input{slides-labels.aux}

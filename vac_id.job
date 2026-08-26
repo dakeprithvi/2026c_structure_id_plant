@@ -1,0 +1,51 @@
+#!/bin/bash
+#SBATCH --job-name=vac_id
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=1
+#SBATCH --time=50:00:00
+#SBATCH --output=log/vac_id_%A_%a.out
+#SBATCH --error=log/vac_id_%A_%a.err
+#SBATCH --array=0-119
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=prithvidake@ucsb.edu
+
+
+# Use was made of computational facilities purchased with funds from the 
+# National Science Foundation (CNS-1725797) and administered by the Center for 
+# Scientific Computing (CSC). The CSC is supported by the California NanoSystems 
+# Institute and the Materials Research Science and Engineering Center (MRSEC; 
+# NSF DMR 2308708) at UC Santa Barbara.
+
+PYTHON=$HOME/miniconda3/envs/jax072/bin/python
+cd $SLURM_SUBMIT_DIR
+
+# Full identification grid on case=test over Monte Carlo iterations 0-19, as 120
+# independent parallel array tasks (one process each, no file collisions). Each
+# group is 20 consecutive tasks (one per MC iteration):
+#   tasks   0-19  -> nn,   cheat=0 (nocheat), noise=0 (clean)
+#   tasks  20-39  -> nn,   cheat=1 (cheat),   noise=0 (clean)
+#   tasks  40-59  -> nn,   cheat=0 (nocheat), noise=1 (noisy)
+#   tasks  60-79  -> nn,   cheat=1 (cheat),   noise=1 (noisy)
+#   tasks  80-99  -> bbox (complete black-box),    noise=0 (clean)
+#   tasks 100-119 -> bbox (complete black-box),    noise=1 (noisy)
+# To run only a subset, submit with --array restricted to the relevant ranges,
+# e.g.  sbatch --array=0-19,80-99 vac_id.job  for clean nocheat-nn + clean bbox.
+#
+# arg signatures:
+#   nn   : CASE MC CHEAT NOISE   (VAc_param_fit_nn_param_noise.py)
+#   bbox : CASE MC NOISE         (VAc_param_fit_bbox_param_noise.py)
+CASE=test
+NN_SCRIPT=VAc_param_fit_nn_param_noise.py
+BBOX_SCRIPT=VAc_param_fit_bbox_param_noise.py
+
+GROUP=$((SLURM_ARRAY_TASK_ID / 20))   # 0..5
+MC=$((SLURM_ARRAY_TASK_ID % 20))      # 0..19
+
+case $GROUP in
+  0) $PYTHON $NN_SCRIPT   $CASE $MC 0 0 ;;   # nn   nocheat clean
+  1) $PYTHON $NN_SCRIPT   $CASE $MC 1 0 ;;   # nn   cheat   clean
+  2) $PYTHON $NN_SCRIPT   $CASE $MC 0 1 ;;   # nn   nocheat noisy
+  3) $PYTHON $NN_SCRIPT   $CASE $MC 1 1 ;;   # nn   cheat   noisy
+  4) $PYTHON $BBOX_SCRIPT $CASE $MC 0   ;;   # bbox clean
+  5) $PYTHON $BBOX_SCRIPT $CASE $MC 1   ;;   # bbox noisy
+esac

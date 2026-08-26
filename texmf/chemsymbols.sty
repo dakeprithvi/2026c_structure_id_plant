@@ -1,0 +1,239 @@
+%
+% help with partial derivatives in thermo
+%
+\newcommand{\messypartial}[3]{%
+\left(\frac{\partial{#1}}{\partial{#2}}\right)_{#3}}
+%
+% partial molar properties
+%
+\newcommand{\Gj}{\ensuremath{\overline{G}_j}}
+\newcommand{\Hj}{\ensuremath{\overline{H}_j}}
+\newcommand{\Hjf}{\ensuremath{\overline{H}_{jf}}}
+\newcommand{\Sj}{\ensuremath{\overline{S}_j}}
+\newcommand{\Vj}{\ensuremath{\overline{V}_j}}
+\newcommand{\Xj}{\ensuremath{\overline{X}_j}}
+\newcommand{\CPj}{\ensuremath{\overline{C}_{Pj}}}
+\newcommand{\CPA}{\ensuremath{\overline{C}_{PA}}}
+\newcommand{\CPB}{\ensuremath{\overline{C}_{PB}}}
+\newcommand{\CPC}{\ensuremath{\overline{C}_{PC}}}
+\newcommand{\Uj}{\ensuremath{\overline{U}_j}}
+%
+% define some math symbols
+%
+\newcommand{\eqbyd}{:=}
+\newcommand{\degC}{\ensuremath{^\circ}{\rm C}}
+\newcommand{\degK}{{\rm K}}
+\newcommand{\degF}{\ensuremath{^\circ}{\rm F}}
+\newcommand{\degR}{\ensuremath{^\circ}{\rm R}}
+\newcommand{\stoi}{\text{\boldmath $\nu$}}
+\newcommand{\stoiT}{\text{ $\boldsymbol{\nu}^T$ }}
+\newcommand{\Avec}{\text{\boldmath $A$}}
+\newcommand{\Amat}{\text{\boldmath $A$}}
+\newcommand{\Imat}{\text{\boldmath $I$}}
+\newcommand{\Pmat}{\text{\boldmath $P$}}
+\newcommand{\Xmat}{\text{\boldmath $X$}}
+\newcommand{\Kmat}{\text{\boldmath $K$}}
+\newcommand{\Evec}{\text{\boldmath $E$}}
+\newcommand{\Mvec}{\text{\boldmath $M$}}
+\newcommand{\rvec}{\text{\boldmath $r$}}
+\newcommand{\nvec}{\text{\boldmath $n$}}
+\newcommand{\avec}{\text{\boldmath $a$}}
+\newcommand{\bvec}{\text{\boldmath $b$}}
+\newcommand{\cvec}{\text{\boldmath $c$}}
+\newcommand{\Rvec}{\text{\boldmath $R$}}
+\newcommand{\xvec}{\text{\boldmath $x$}}
+\newcommand{\yvec}{\text{\boldmath $y$}}
+\newcommand{\zvec}{\text{\boldmath $z$}}
+\newcommand{\vvec}{\text{\boldmath $v$}}
+\newcommand{\evec}{\text{\boldmath $e$}}
+\newcommand{\mvec}{\text{\boldmath $m$}}
+\newcommand{\Nvec}{\text{\boldmath $N$}}
+\newcommand{\Hmat}{\text{\boldmath $H$}}
+\newcommand{\Lmat}{\text{\boldmath $L$}}
+\newcommand{\Umat}{\text{\boldmath $U$}}
+\newcommand{\Wmat}{\text{\boldmath $W$}}
+\newcommand{\tHmat}{\text{\boldmath $\widetilde{H}$}}
+\newcommand{\tH}{\text{$\widetilde{H}$}}
+\newcommand{\tU}{\text{$\widetilde{U}$}}
+\newcommand{\Href}{\text{$\hat{H}_{\rm ref}$}}
+\newcommand{\Uref}{\text{$\hat{U}_{\rm ref}$}}
+\newcommand{\Eref}{\text{$\hat{E}_{\rm ref}$}}
+\newcommand{\zerovec}{\text{\boldmath $0$}}
+\newcommand{\abs}[1]{\left| #1 \right|}
+\newcommand{\cov}{\text{cov}}
+\newcommand{\norm}[1]{\left\| #1 \right\|}
+\newcommand{\epsvec}{\text{\boldmath $\epsilon$}}
+\newcommand{\varepsvec}{\text{\boldmath $\varepsilon$}}
+\newcommand{\muvec}{\text{\boldmath $\mu$}}
+\newcommand{\fvec}{\text{\boldmath $f$}}
+\newcommand{\gvec}{\text{\boldmath $g$}}
+\newcommand{\hvec}{\text{\boldmath $h$}}
+\newcommand{\Jbold}{\text{\boldmath $J$}}
+\newcommand{\Ibold}{\text{\boldmath $I$}}
+\newcommand{\fx}{\text{\boldmath $f_x$}}
+\newcommand{\ftheta}{\text{\boldmath $f_\theta$}}
+\newcommand{\gtheta}{\text{\boldmath $g_\theta$}}
+\newcommand{\thetavec}{\text{\boldmath$\theta$}}
+\newcommand{\phivec}{\text{\boldmath$\phi$}}
+\newcommand{\kvec}{\text{\boldmath$k$}}
+\newcommand{\gammavec}{\text{\boldmath $\gamma$}}
+\newcommand{\lamvec}{\text{\boldmath $\lambda$}}
+\newcommand{\Acal}{\text{\boldmath ${\cal{A}}$ }}
+\newcommand{\Bmat}{\text{\boldmath $B$ }}
+\newcommand{\Smat}{\text{\boldmath $S$}}
+\newcommand{\Uo}{\text{$U^{\rm o}$}}
+\newcommand{\oc}{\text{$\overline{c}$}}
+\newcommand{\of}{\text{$\overline{f}$}}
+\newcommand{\ovr}{\overline{r}}
+\newcommand{\oT}{\text{$\overline{T}$}}
+\newcommand{\oR}{\text{$\overline{R}$}}
+\newcommand{\ox}{\text{$\overline{x}$}}
+\newcommand{\oz}{\text{$\overline{z}$}}
+\newcommand{\oK}{\text{$\overline{K}$}}
+\newcommand{\oN}{\text{$\overline{N}$}}
+\newcommand{\ot}{\text{$\overline{t}$}}
+\newcommand{\oP}{\text{$\overline{P}$}}
+\newcommand{\op}{\text{$\overline{p}$}}
+\newcommand{\otheta}{\text{$\overline{\theta}$}}
+\newcommand{\olambda}{\text{$\overline{\lambda}$}}
+%\newcommand{\oV}{\text{$\overline{V}$}}
+\newcommand{\tc}{\text{$\widetilde{c}$}}
+\newcommand{\tf}{\text{$\widetilde{f}$}}
+\newcommand{\tG}{\text{$\widetilde{G}$}}
+\newcommand{\tk}{\text{$\widetilde{k}$}}
+\newcommand{\tP}{\text{$\widetilde{P}$}}
+\newcommand{\tR}{\text{$\widetilde{R}$}}
+\newcommand{\tr}{\text{$\widetilde{r}$}}
+\newcommand{\tilt}{\text{$\widetilde{t}$}}
+\newcommand{\tT}{\text{$\widetilde{T}$}}
+\newcommand{\uW}{\text{$\underline{W}$}}
+\newcommand{\uz}{\text{$\underline{z}$}}
+\newcommand{\udz}{\text{$\underline{\Delta z}$}}
+\newcommand{\Msat}{\text{$M_{\rm sat}$}}
+\newcommand{\csat}{\text{$c_{\rm sat}$}}
+\newcommand{\Lap}{{\cal L}}
+\newcommand{\expe}{{\cal E}}
+
+
+%\newcommand{\Em}{\text{\small E\normalsize}\!-\!}
+%\newcommand{\Ep}{\text{\small E\normalsize}\!}
+% these seemed to be some shorthand for writing 
+% E-n instead  of 10^{-n}; don't use, hard to read; jbr
+
+\newcommand{\half}{\frac{1}{2}}
+\newcommand{\shalf}{\scriptstyle\frac{1}{2}}
+%
+% bold symbols for vectors and tensors
+%
+\newcommand{\bdel}{\text{$\boldsymbol{\nabla}$}}
+\newcommand{\del}{\nabla}
+\newcommand{\odel}{\overline{\nabla}}
+\newcommand{\obdel}{\overline{\bdel}}
+\newcommand{\bpi}{\text{\boldmath $\pi$}}
+\newcommand{\bn}{\text{$\boldsymbol{n}$}}
+\newcommand{\bv}{\text{$\boldsymbol{v}$}}
+\newcommand{\btau}{\text{$\boldsymbol{\tau}$}}
+\newcommand{\bdelta}{\text{$\boldsymbol{\delta}$}}
+\newcommand{\bq}{\text{$\boldsymbol{q}$}}
+\newcommand{\bj}{\text{$\boldsymbol{j}$}}
+\newcommand{\bJ}{\text{$\boldsymbol{J}$}}
+\newcommand{\bg}{\text{$\boldsymbol{g}$}}
+\newcommand{\bS}{\text{$\boldsymbol{S}$}}
+\newcommand{\bP}{\text{$\boldsymbol{P}$}}
+\newcommand{\cl}[1]{\multicolumn{1}{c}{#1}}
+%
+% some help for plotting symbols
+%
+\newcommand{\solidcircleplotmarker}{$\bullet$}
+\newcommand{\opencircleplotmarker}{$\circ$}
+\newcommand{\wt}{\text{$\widehat{\thetavec}$}}
+\newcommand{\tho}{\text{$\thetavec_0$}}
+\newcommand{\xt}{\times10^}
+\newsavebox{\@rotbtrbox}
+\newlength{\@rotbtrht}
+\newcommand{\rotbtr}[1]{%
+  \savebox{\@rotbtrbox}{$\blacktriangle$}%
+  \setlength{\@rotbtrht}{\ht\@rotbtrbox}%
+  \raisebox{0.5\@rotbtrht}{%
+    \begin{rotate}{#1}%
+      \makebox[0pt][c]{%
+        \raisebox{-\height}{$\blacktriangle$}}\end{rotate}}}
+%\newcommand{\rotbtr}[1]{\begin{rotate}{#1}\parbox[b]{2ex}{$\blacktriangleright$}\end{rotate}}
+\renewcommand{\Re}{\text{Re}}
+\renewcommand{\Im}{\text{Im}}
+
+
+% some chemical formulas using (m-ch-en)
+
+%%  commented out; 7/22/2019; package conflicts with chemfig
+
+% \newcommand{\phenol}{%
+% \startchemical
+% \bottext{phenol}
+%    \chemical [SIX,B,EB246,R6,RZ6] [OH]
+% \stopchemical}
+% \newcommand{\cyclohexanone}{%
+% \startchemical
+% \bottext{cyclohexanone}
+%    \chemical [SIX,B,ER6,RZ6][O]
+% \stopchemical}
+% \newcommand{\cyclohexenone}{%
+% \startchemical
+% \bottext{cyclohexenone}
+%   \chemical [SIX,B,EB1,ER6,RZ6] [O]
+% \stopchemical}
+% \newcommand{\Rphenyl}{%
+% \startchemical
+%    \chemical [SIX,B,EB246,R123456,RZ123456] [R_1,R_2,R_3,R_4,R_5,OH]
+% \stopchemical}
+% \newcommand{\Ranone}{%
+% \startchemical
+% \chemical [SIX,B,R12345,ER6,RZ123456]  [R_1,R_2,R_3,R_4,R_5,O]
+% \stopchemical}
+
+% some chemical formulas using chemfig
+
+\newcommand{\phenol}{%
+\chemname{\chemfig{*6(=-=-(-[2]OH)=-)}}{phenol}}
+
+\newcommand{\phenolname}{%
+\chemname{\phenol}{phenol}}
+
+\newcommand{\cyclohexanone}{%
+\chemname{\chemfig{*6(----(=[2]O)--)}}{cyclohexanone}}
+
+\newcommand{\cyclohexanonename}{%
+\chemname{\cyclohexanone}{cyclohexanone}}
+
+\newcommand{\cyclohexenone}{%
+\chemname{\chemfig{*6(--=-(=[2]O)--)}}{cyclohexenone}}
+
+\newcommand{\Rphenyl}{%
+\chemfig{*6((-R4)-(-R3)-(-R2)-(-R1)-(=[2]O)-(-R5)-(-R4))}}
+
+\newcommand{\Ranone}{%
+\chemfig{*6((-R4)-(-R3)=(-R2)-(-R1)=(-[2]OH)-(-R5)=(-R4))}}
+
+\newcommand{\propyleneoxide}{%
+  \chemfig{[:30]O*3(-(-)--)}}
+
+\newcommand{\propyleneglycol}{%
+  \chemfig{HO-[1]-(-[7]OH)(-[1])}}
+
+\newcommand{\alkylsubsthiophene}{%
+  \chemfig{[:-60]*6(?=-S-=?(-R))}}
+
+\newcommand{\alkylsubsdibenzothiophene}{%
+  \chemfig{*6(=(-R)-*6(-S-*6(-=-(-R)=-)=?)=?-=-)}}
+
+\newcommand{\benzonaphthothiophene}{%
+  \chemfig{*6(=(-R)-*6(-S-*6(-=*6(-=-=-)-=-)=?)=?-=-)}}
+
+\newcommand{\trioxane}{%
+  \chemfig{O*6(--O--O--)}}
+
+\newcommand{\oxylene}{%
+\chemfig{**6(---(-CH_3)-(-CH_3)--)}}
+
+\newcommand{\phthalicanhydride}{%
+\chemfig{**6(--*5(-C(=O)-O-C(=O)-)----)}}

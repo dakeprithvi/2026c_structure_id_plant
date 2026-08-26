@@ -1,0 +1,19 @@
+# Data caches (kept in backups/ and on Zenodo, never on GitHub)
+*.pickle
+
+# Python
+__pycache__/
+*.pyc
+
+# LaTeX / build artifacts
+build/
+.dependencies/
+
+# Generated publish artifacts (rebuilt by `make github`)
+docs/
+*.zip
+
+# Manuscript sources (kept on origin, excluded from the GitHub snapshot)
+paper.tex
+talk.tex
+*.pickle

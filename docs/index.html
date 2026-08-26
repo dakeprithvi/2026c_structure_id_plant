@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A tale of perfect fit and phantom optima: how data-driven models can fail in real-time optimization</title>
+<script>
+MathJax = { tex: { inlineMath: [['\\(', '\\)']] } };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+<style>
+  body { font-family: Georgia, "Times New Roman", serif; max-width: 900px;
+         margin: 0 auto; padding: 2rem 1.2rem; color: #1a1a1a; line-height: 1.5; }
+  header { border-bottom: 2px solid #ddd; margin-bottom: 2rem; padding-bottom: 1rem; }
+  h1 { font-size: 1.55rem; line-height: 1.25; margin: 0 0 .4rem; }
+  .authors { color: #555; font-size: 1rem; }
+  .authors sup, .affiliations sup { font-size: .7rem; }
+  .affiliations { color: #666; font-size: .9rem; margin-top: .3rem; }
+  .corresponding { color: #666; font-size: .85rem; margin-top: .25rem; }
+  .corresponding a { color: #0969da; text-decoration: none; }
+  .resource-buttons { display: flex; gap: .8rem; flex-wrap: wrap;
+                       margin-top: 1rem; }
+  .resource-link { display: inline-flex; align-items: center; gap: 8px;
+                    padding: .6rem 1.1rem; border-radius: 6px;
+                    text-decoration: none; font-weight: 600; font-size: .9rem;
+                    font-family: -apple-system, system-ui, sans-serif;
+                    transition: transform .2s, box-shadow .2s; }
+  .resource-link:hover { transform: translateY(-2px);
+                          box-shadow: 0 4px 12px rgba(0,0,0,.12); }
+  .github-link { background: #24292e; color: #fff; }
+  .zenodo-link { background: #1682d4; color: #fff; }
+  .arxiv-link { background: #b31b1b; color: #fff; }
+  figure { margin: 2.5rem 0; padding: 0; }
+  figure img { width: 100%; height: auto; border: 1px solid #eee;
+                background: #fff; display: block; }
+  figure a img { cursor: pointer; transition: border-color .15s; }
+  figure a:hover img { border-color: #0969da; }
+  figcaption { font-size: .92rem; color: #333; margin-top: .6rem; }
+  .supp-head { font-size: 1.25rem; margin: 2.5rem 0 1rem;
+                padding-top: 1.5rem; border-top: 2px solid #ddd; }
+  figcaption b { color: #000; }
+  .src { white-space: nowrap; }
+  .src a { color: #0969da; text-decoration: none; font-size: .85rem; }
+  .src a:hover { text-decoration: underline; }
+  footer { border-top: 1px solid #ddd; margin-top: 3rem; padding-top: 1rem;
+            color: #888; font-size: .85rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>A tale of perfect fit and phantom optima: how data-driven models can fail in real-time optimization</h1>
+  <div class="authors">Prithvi Dake<sup>1,*</sup>, Rahul Bindlish<sup>2</sup>, James B. Rawlings<sup>1</sup></div>
+  <div class="affiliations"><sup>1</sup>Department of Chemical Engineering, University of California, Santa Barbara, CA 93106, USA &nbsp;&middot;&nbsp; <sup>2</sup>Dow Chemical Company, TX, USA</div>
+  <div class="corresponding"><sup>*</sup>Corresponding author: <a href="mailto:prithvidake@ucsb.edu">prithvidake@ucsb.edu</a></div>
+  <div class="resource-buttons"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant" class="resource-link github-link"><svg height="20" width="20" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>View on GitHub</a><a href="https://doi.org/10.5281/zenodo.21464341" class="resource-link zenodo-link"><svg height="20" width="20" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>Data on Zenodo</a><a href="https://arxiv.org/abs/2608.23885v1" class="resource-link arxiv-link"><svg height="20" width="20" viewBox="0 0 24 24" fill="currentColor"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>Read on arXiv</a></div>
+</header>
+<figure id="fig:abstract">
+  <img src="figures/fig_abstract.png" alt="Figure 1">
+  <figcaption><b>Figure 1.</b> (A) Historical plant datasets are used to train (B) a structured model and a black-box ML/AI closure model, each deployed in real-time optimization (RTO). (C) Near-identical fits map to very different optima, the worst-case structured model loses close to 30% profit and the black-box model over 50%. A <em>reliable</em> data-driven model must recover the optimum, not be judged solely on the validation dataset.</figcaption>
+</figure>
+<figure id="fig:block_measurement">
+  <img src="figures/fig_block_measurement.png" alt="Figure 2">
+  <figcaption><b>Figure 2.</b> Simplified process flowsheet for the vinyl acetate (VAc) monomer plant consisting of 7 units and 13 streams. (Ee: Ethylene, Ea: Ethane, A: Acetic acid, O: Oxygen, W: Water, V: Vinyl acetate, C: Carbon dioxide). Outlet concentrations from the reactor are measured subject to step inputs in the decision variables (fresh feed rates, recycle fractions and reactor temperature), that are shown by the control valves and the controller icon.</figcaption>
+</figure>
+<figure id="fig:training_data">
+  <a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_train_val_param_nn.py" title="View source: VAc_plot_train_val_param_nn.py"><img src="figures/fig_training_data.png" alt="Figure 3"></a>
+  <figcaption><b>Figure 3.</b> A snapshot of training data from the plant model with no measurement noise. The measurements are shown in red and the decision variables in black. The dotted grey lines represent \(x_s^\star\) and \(u_s^\star\) from. <span class="src"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_train_val_param_nn.py">[source: VAc_plot_train_val_param_nn.py]</a></span></figcaption>
+</figure>
+<figure id="fig:validation_plots_struc">
+  <a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_train_val_param_nn.py" title="View source: VAc_plot_train_val_param_nn.py"><img src="figures/fig_validation_plots_struc.png" alt="Figure 4"></a>
+  <figcaption><b>Figure 4.</b> Concentration predictions on the validation set for (a) <em>rmeas</em>, (b) <em>cmeas_rinit</em>, (c) <em>cmeas</em> and (d) <em>cmeas_noise</em>. Measurements are shown in red. The shaded bands are the ensemble spread, taken as the 5--95% quantiles of the 20 random initializations. <span class="src"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_train_val_param_nn.py">[source: VAc_plot_train_val_param_nn.py]</a></span></figcaption>
+</figure>
+<figure id="fig:parity_plots">
+  <a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_train_val_param_nn.py" title="View source: VAc_plot_train_val_param_nn.py"><img src="figures/fig_parity_plots.png" alt="Figure 5"></a>
+  <figcaption><b>Figure 5.</b> Parity plots of the reaction rates \([r_1, r_2]^\Rm{T}\) on the validation set for (a) <em>rmeas</em>, (b) <em>cmeas_rinit</em>, (c) <em>cmeas</em> and (d) <em>cmeas_noise</em>. Top row shows \(r_1\) and bottom row \(r_2\). The dotted line is ideal parity. The bands are the ensemble spread, taken as the 5--95% quantiles across the 20 random initializations. <span class="src"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_train_val_param_nn.py">[source: VAc_plot_train_val_param_nn.py]</a></span></figcaption>
+</figure>
+<figure id="fig:validation_plots_bbox">
+  <a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_train_val_param_bbox_nn.py" title="View source: VAc_plot_train_val_param_bbox_nn.py"><img src="figures/fig_validation_plots_bbox.png" alt="Figure 6"></a>
+  <figcaption><b>Figure 6.</b> Concentration predictions on the validation set for the black-box model, (a) <em>bbox</em> and (b) <em>bbox_noise</em>. Measurements are shown in red. The bands are the ensemble spread, taken as the 5--95% quantiles of the 20 random initializations. <span class="src"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_train_val_param_bbox_nn.py">[source: VAc_plot_train_val_param_bbox_nn.py]</a></span></figcaption>
+</figure>
+<figure id="fig:landscape_plant">
+  <a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_hist.py" title="View source: VAc_plot_hist.py"><img src="figures/fig_landscape_plant.png" alt="Figure 7"></a>
+  <figcaption><b>Figure 7.</b> Plant profit landscape \(\ell(T, \alpha)\) with the remaining degrees of freedom fixed at the plant optimum. The star marks the plant optimum \((T^\star, \alpha^\star)\). The surface is unimodal and well-conditioned. <span class="src"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_hist.py">[source: VAc_plot_hist.py]</a></span></figcaption>
+</figure>
+<figure id="fig:landscape_models">
+  <a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_hist.py" title="View source: VAc_plot_hist.py"><img src="figures/fig_landscape_models.png" alt="Figure 8"></a>
+  <figcaption><b>Figure 8.</b> Model-predicted profit landscape \(\hat{\ell}(T, \alpha)\) that each trained model presents to the RTO optimizer. Panels, in order of degrading structure and data, are (a) <em>rmeas</em>, (b) <em>cmeas_rinit</em>, (c) <em>cmeas</em>, (d) <em>cmeas_noise</em>, (e) <em>bbox</em>, and (f) <em>bbox_noise</em>. The star marks the plant optimum as a fixed reference and the circles each model's own optimum. Each panel shows one of the worst-performing members of the 20 initializations. <span class="src"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_hist.py">[source: VAc_plot_hist.py]</a></span></figcaption>
+</figure>
+<figure id="fig:profit_loss_struc">
+  <a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_perturb_plant.py" title="View source: VAc_plot_perturb_plant.py"><img src="figures/fig_profit_loss_struc.png" alt="Figure 9"></a>
+  <figcaption><b>Figure 9.</b> Profit loss \(\Delta \ell\) for (a) <em>rmeas</em>, (b) <em>cmeas_rinit</em>, (c) <em>cmeas</em> and (d) <em>cmeas_noise</em>. Columns are cases and rows are the 3 multi-start RTO seeds; each panel is the distribution over the 20 ensemble members, plotted as relative frequency. The dotted line marks the best achievable profit loss, \(0\%\). <span class="src"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_perturb_plant.py">[source: VAc_plot_perturb_plant.py]</a></span></figcaption>
+</figure>
+<figure id="fig:profit_loss_bbox">
+  <a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_perturb_bbox_plant.py" title="View source: VAc_plot_perturb_bbox_plant.py"><img src="figures/fig_profit_loss_bbox.png" alt="Figure 10"></a>
+  <figcaption><b>Figure 10.</b> Profit loss \(\Delta \ell\) for (a) <em>bbox</em> and (b) <em>bbox_noise</em>. Columns are cases and rows are the 3 multi-start RTO seeds; each panel is the distribution over the 20 ensemble members, plotted as relative frequency. The dotted line marks the best achievable profit loss, \(0\%\). <span class="src"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_perturb_bbox_plant.py">[source: VAc_plot_perturb_bbox_plant.py]</a></span></figcaption>
+</figure>
+<h2 class="supp-head">Supplementary material</h2>
+<figure id="fig:lr_cmeas_rinit">
+  <a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_lr.py" title="View source: VAc_plot_lr.py"><img src="figures/fig_lr_cmeas_rinit.png" alt="Figure S1"></a>
+  <figcaption><b>Figure S1.</b> <em>cmeas_rinit</em>: drift away from the initialization. The model is initialized at the weights at which it recovers the plant optimum, marked by the dash-dotted line (learning rate \(0\), no training step taken). Under ADAM (left) the loss moves away from that line as training proceeds, so the optimizer leaves the basin it was handed. After the switch to L-BFGS at epoch 250 (right) the loss returns toward the initialization, so L-BFGS recovers part of what ADAM gave up. As the learning rate decreases, ADAM takes smaller steps and the curves stay at the initialization; this preserves the optimum only because it was supplied, not because training located it. <span class="src"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_lr.py">[source: VAc_plot_lr.py]</a></span></figcaption>
+</figure>
+<figure id="fig:lr_cmeas">
+  <a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_lr.py" title="View source: VAc_plot_lr.py"><img src="figures/fig_lr_cmeas.png" alt="Figure S2"></a>
+  <figcaption><b>Figure S2.</b> Learning-rate sweep for <em>cmeas</em>. The chosen learning rate is \(0.05\). <span class="src"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_lr.py">[source: VAc_plot_lr.py]</a></span></figcaption>
+</figure>
+<figure id="fig:lr_cmeas_noise">
+  <a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_lr.py" title="View source: VAc_plot_lr.py"><img src="figures/fig_lr_cmeas_noise.png" alt="Figure S3"></a>
+  <figcaption><b>Figure S3.</b> Learning-rate sweep for <em>cmeas_noise</em>. The chosen learning rate is \(0.05\). <span class="src"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_lr.py">[source: VAc_plot_lr.py]</a></span></figcaption>
+</figure>
+<figure id="fig:lr_bbox">
+  <a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_lr.py" title="View source: VAc_plot_lr.py"><img src="figures/fig_lr_bbox.png" alt="Figure S4"></a>
+  <figcaption><b>Figure S4.</b> Learning-rate sweep for <em>bbox</em>. The chosen learning rate is \(0.01\). <span class="src"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_lr.py">[source: VAc_plot_lr.py]</a></span></figcaption>
+</figure>
+<figure id="fig:lr_bbox_noise">
+  <a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_lr.py" title="View source: VAc_plot_lr.py"><img src="figures/fig_lr_bbox_noise.png" alt="Figure S5"></a>
+  <figcaption><b>Figure S5.</b> Learning-rate sweep for <em>bbox_noise</em>. The chosen learning rate is \(0.01\). <span class="src"><a href="https://github.com/dakeprithvi/2026c_structure_id_plant/blob/main/VAc_plot_lr.py">[source: VAc_plot_lr.py]</a></span></figcaption>
+</figure>
+<footer>
+<a href="https://github.com/dakeprithvi/2026c_structure_id_plant">2026c_structure_id_plant</a> &middot; maintained by
+<a href="https://github.com/dakeprithvi">dakeprithvi</a>
+</footer>
+</body>
+</html>
